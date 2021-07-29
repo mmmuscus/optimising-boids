@@ -58,8 +58,8 @@ int main(int argc, char * argv[]) {
 	glutDisplayFunc(onDisplay);                // Register event handlers
 	glutMouseFunc(onMouse);
 	glutIdleFunc(onIdle);
-	glutKeyboardFunc(onKeyboard);
-	glutKeyboardUpFunc(onKeyboardUp);
+	//glutKeyboardFunc(onKeyboard);
+	//glutKeyboardUpFunc(onKeyboardUp);
 	glutMotionFunc(onMouseMotion);
 
 	glutMainLoop();

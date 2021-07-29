@@ -1,5 +1,16 @@
 #include "framework.h"
 
+void printMat4(mat4 mat) {
+	printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+	printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+	printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+	printf("%f, %f, %f, %f\n\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+}
+
+void printVec3(vec3 vec) {
+	printf("X: %f, Y: %f, Z: %f\n\n", vec.x, vec.y, vec.z);
+}
+
 // vertex shader in GLSL: It is a Raw string (C++11) since it contains new line characters
 const char* const vertexSource = R"(
 	#version 330				// Shader 3.3
@@ -32,18 +43,99 @@ struct VertexData {
 	//vec2 texcoord;
 };
 
-struct RenderState {
-	mat4 M, Minv, V, P;
-	vec3 wEye;
-	Material mat;
-	// light related state thingies
+struct Light {
+	vec3 La, Le, wLightPos;
 
+	Light(vec3 _La, vec3 _Le, vec3 _wLightPos)
+	{
+		La = vec3(_La);
+		Le = vec3(_Le);
 
-	// texture related state thingies
+		wLightPos = vec3(_wLightPos);
+	}
 };
 
-class Scene {
+struct Material {
+	vec3 kd, ks, ka;
+	float shininess;
 
+	Material(vec3 _kd, vec3 _ks, vec3 _ka, float _shininess)
+	{
+		kd = vec3(_kd);
+		ks = vec3(_ks);
+		ka = vec3(_ka);
+
+		shininess = _shininess;
+	}
+};
+
+struct RenderState {
+	// Object related states
+	mat4 M, Minv, V, P;
+
+	// Camera related states
+	vec3 wEye;
+
+	// material related state thingies
+	vec3 kd, ks, ka;
+	float shininess;
+
+	// light related state thingies
+	vec3 La, Le, wLightPos;
+
+	// texture related state thingies
+
+public:
+
+	void print()
+	{
+		printf("########################################\n");
+		printf("---------------- OBJECT ----------------\n");
+
+		printf("M:\n");
+		printMat4(M);
+
+		printf("Minv:\n");
+		printMat4(Minv);
+
+		printf("V:\n");
+		printMat4(V);
+
+		printf("P:\n");
+		printMat4(P);
+
+		printf("(MVP):\n");
+		printMat4(M * V * P);
+
+		printf("---------------- CAMERA ----------------\n");
+
+		printf("wEye:\n");
+		printVec3(wEye);
+
+		printf("---------------- MATERIAL ----------------\n");
+
+		printf("kd:\n");
+		printVec3(kd);
+
+		printf("ks:\n");
+		printVec3(ks);
+
+		printf("ka:\n");
+		printVec3(ka);
+
+		printf("shininess: %f\n", shininess);
+
+		printf("---------------- LIGHT ----------------\n");
+
+		printf("La\n");
+		printVec3(La);
+
+		printf("Le\n");
+		printVec3(Le);
+
+		printf("wLightPos\n");
+		printVec3(wLightPos);
+	}
 };
 
 struct Camera {
@@ -77,14 +169,6 @@ public:
 						0,							0,					-(fp + bp) / (bp - fp),		-1,
 						0,							0,					-2 * fp * bp / (bp - fp),	0);
 	}
-};
-
-struct Ligth {
-
-};
-
-struct Material {
-
 };
 
 /*struct Texture {
@@ -197,6 +281,10 @@ public:
 	}
 
 	virtual void Animate(float tstart, float tend) { geom->Animate(tend); }
+};
+
+class Scene {
+
 };
 
 GPUProgram gpuProgram; // vertex and fragment shaders
