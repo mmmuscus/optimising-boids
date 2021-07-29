@@ -17,7 +17,10 @@ struct Object {
 };
 
 struct RenderState {
-	
+	mat4 M, Minv, V, P;
+	vec3 wEye;
+	Material mat;
+	// light related state thingies
 };
 
 struct Shader {
@@ -32,6 +35,7 @@ struct Material {
 
 };*/
 
+// we dont need a more encompassing geometry class, however we need to do our homework w/o it
 struct ParamSurface {
 
 };
