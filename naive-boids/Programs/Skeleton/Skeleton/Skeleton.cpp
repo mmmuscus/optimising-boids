@@ -83,10 +83,6 @@ struct Ligth {
 
 };
 
-struct Shader {
-
-};
-
 struct Material {
 
 };
@@ -136,10 +132,37 @@ public:
 	}
 };
 
-// we dont need a more encompassing geometry class, however we need to do our homework w/o it
-// maybe a geom class would help to handle the vao vbo stuff
-struct ParamSurface {
+struct ParamSurface : public Geometry {
+	unsigned int VtxPerStrip, Strips;
 
+public:
+
+	virtual VertexData GenVertexData(float u, float v) = 0;
+
+	void Create(int N = 30, int M = 30) 
+	{
+		VtxPerStrip = (M + 1) * 2;
+		Strips = N;
+		std::vector<VertexData> vtxData;
+
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j <= M; j++)
+			{
+				vtxData.push_back(GenVertexData((float)j / M, (float)i / N));
+				vtxData.push_back(GenVertexData((float)j / M, (float)(i + 1) / N));
+			}
+		}
+
+		Load(vtxData);
+	}
+
+	void Draw()
+	{
+		glBindVertexArray(vao);
+		for (unsigned int i = 0; i < Strips; i++)
+			glDrawArrays(GL_TRIANGLE_STRIP, i * VtxPerStrip, VtxPerStrip);
+	}
 };
 
 struct Object {
