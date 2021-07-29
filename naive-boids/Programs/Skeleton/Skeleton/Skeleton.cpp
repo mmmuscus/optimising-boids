@@ -166,7 +166,37 @@ public:
 };
 
 struct Object {
+	Geometry *geom;
+	Material *mat;
 
+	vec3 pos, rotationAxis;
+	float rotationAngle;
+
+public:
+
+	Object(Geometry *_geom, Material *_mat, vec3 _pos)
+	{
+		geom = _geom;
+		mat = _mat;
+
+		pos = vec3(_pos);
+		rotationAxis = vec3(0, 0, 1);
+		rotationAngle = 0;
+	}
+
+	virtual void Draw(RenderState state)
+	{
+		state.M = RotationMatrix(rotationAngle, rotationAxis) * TranslateMatrix(pos);
+		state.Minv = TranslateMatrix(-pos) * RotationMatrix(-rotationAngle, rotationAxis);
+		//state.texture = texture
+		
+		// MATERIAL TO STATE
+		
+		//shader->Bind(state);
+		geom->Draw();
+	}
+
+	virtual void Animate(float tstart, float tend) { geom->Animate(tend); }
 };
 
 GPUProgram gpuProgram; // vertex and fragment shaders
