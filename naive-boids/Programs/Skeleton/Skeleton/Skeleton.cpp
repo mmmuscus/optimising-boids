@@ -1,6 +1,48 @@
 #include "framework.h"
 
-struct Scene {
+// vertex shader in GLSL: It is a Raw string (C++11) since it contains new line characters
+const char* const vertexSource = R"(
+	#version 330				// Shader 3.3
+	precision highp float;		// normal floats, makes no difference on desktop computers
+
+	uniform mat4 MVP;			// uniform variable, the Model-View-Projection transformation matrix
+	layout(location = 0) in vec2 vp;	// Varying input: vp = vertex position is expected in attrib array 0
+
+	void main() {
+		gl_Position = vec4(vp.x, vp.y, 0, 1) * MVP;		// transform vp from modeling space to normalized device space
+	}
+)";
+
+// fragment shader in GLSL
+const char* const fragmentSource = R"(
+	#version 330			// Shader 3.3
+	precision highp float;	// normal floats, makes no difference on desktop computers
+	
+	uniform vec3 color;		// uniform variable, the color of the primitive
+	out vec4 outColor;		// computed color of the current pixel
+
+	void main() {
+		outColor = vec4(color, 1);	// computed color is the color of the primitive
+	}
+)";
+
+struct VertexData {
+	vec3 position, normal;
+
+	//vec2 texcoord;
+};
+
+struct RenderState {
+	mat4 M, Minv, V, P;
+	vec3 wEye;
+	Material mat;
+	// light related state thingies
+
+
+	// texture related state thingies
+};
+
+class Scene {
 
 };
 
@@ -9,7 +51,7 @@ struct Camera {
 
 	float fov = 75.0f * (float)M_PI / 180.0f;
 	float asp = (float)windowWidth / windowHeight;
-	float fp = 1;
+	float fp = 1;	// care for z fighting
 	float bp = 30;
 
 public:
@@ -41,20 +83,6 @@ struct Ligth {
 
 };
 
-struct Object {
-
-};
-
-struct RenderState {
-	mat4 M, Minv, V, P;
-	vec3 wEye;
-	Material mat;
-	// light related state thingies
-
-
-	// texture related state thingies
-};
-
 struct Shader {
 
 };
@@ -67,37 +95,56 @@ struct Material {
 
 };*/
 
+class Geometry {
+protected:
+
+	unsigned int vao, vbo;
+
+public:
+
+	Geometry()
+	{
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+		glGenBuffers(1, &vbo);
+	}
+
+	void Load(const std::vector<VertexData>& vtxData)
+	{
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, vtxData.size() * sizeof(VertexData), &vtxData[0], GL_DYNAMIC_DRAW);
+		
+		glEnableVertexAttribArray(0);	// position
+		glEnableVertexAttribArray(1);	// normal
+		//glEnableVertexAttribArray(2);	// texcoord
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, position));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));
+		//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, texcoord));
+	}
+
+	virtual void Draw() = 0;
+	
+	// hopefully this will be used sometime
+	virtual void Animate(float t) {}
+
+	~Geometry()
+	{
+		glDeleteBuffers(1, &vbo);
+		glDeleteVertexArrays(1, &vao);
+	}
+};
+
 // we dont need a more encompassing geometry class, however we need to do our homework w/o it
 // maybe a geom class would help to handle the vao vbo stuff
 struct ParamSurface {
 
 };
 
-// vertex shader in GLSL: It is a Raw string (C++11) since it contains new line characters
-const char * const vertexSource = R"(
-	#version 330				// Shader 3.3
-	precision highp float;		// normal floats, makes no difference on desktop computers
+struct Object {
 
-	uniform mat4 MVP;			// uniform variable, the Model-View-Projection transformation matrix
-	layout(location = 0) in vec2 vp;	// Varying input: vp = vertex position is expected in attrib array 0
-
-	void main() {
-		gl_Position = vec4(vp.x, vp.y, 0, 1) * MVP;		// transform vp from modeling space to normalized device space
-	}
-)";
-
-// fragment shader in GLSL
-const char * const fragmentSource = R"(
-	#version 330			// Shader 3.3
-	precision highp float;	// normal floats, makes no difference on desktop computers
-	
-	uniform vec3 color;		// uniform variable, the color of the primitive
-	out vec4 outColor;		// computed color of the current pixel
-
-	void main() {
-		outColor = vec4(color, 1);	// computed color is the color of the primitive
-	}
-)";
+};
 
 GPUProgram gpuProgram; // vertex and fragment shaders
 unsigned int vao;	   // virtual world on the GPU
