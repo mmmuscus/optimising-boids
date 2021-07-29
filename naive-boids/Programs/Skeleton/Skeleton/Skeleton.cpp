@@ -5,7 +5,36 @@ struct Scene {
 };
 
 struct Camera {
+	vec3 wEye, wLookat, wVup;
 
+	float fov = 75.0f * (float)M_PI / 180.0f;
+	float asp = (float)windowWidth / windowHeight;
+	float fp = 1;
+	float bp = 30;
+
+public:
+	
+	// view transformation matrix
+	mat4 V()
+	{
+		vec3 w = normalize(wEye - wLookat);
+		vec3 u = normalize(cross(wVup, w));
+		vec3 v = cross(w, u);
+
+		return TranslateMatrix(wEye * (-1)) * mat4(	u.x,	v.y,	w.x,	0,
+													u.y,	v.y,	w.y,	0,
+													u.z,	v.z,	w.z,	0,
+													0,		0,		0,		1);
+	}
+
+	// projection matrix
+	mat4 P()
+	{
+		return mat4(	1 / (tan(fov / 2) * asp),	0,					0,							0,
+						0,							1 / tan(fov / 2),	0,							0,
+						0,							0,					-(fp + bp) / (bp - fp),		-1,
+						0,							0,					-2 * fp * bp / (bp - fp),	0);
+	}
 };
 
 struct Ligth {
@@ -21,6 +50,9 @@ struct RenderState {
 	vec3 wEye;
 	Material mat;
 	// light related state thingies
+
+
+	// texture related state thingies
 };
 
 struct Shader {
