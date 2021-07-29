@@ -36,6 +36,7 @@ struct Material {
 };*/
 
 // we dont need a more encompassing geometry class, however we need to do our homework w/o it
+// maybe a geom class would help to handle the vao vbo stuff
 struct ParamSurface {
 
 };
