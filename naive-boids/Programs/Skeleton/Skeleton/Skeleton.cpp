@@ -1,5 +1,41 @@
 #include "framework.h"
 
+struct Scene {
+
+};
+
+struct Camera {
+
+};
+
+struct Ligth {
+
+};
+
+struct Object {
+
+};
+
+struct RenderState {
+	
+};
+
+struct Shader {
+
+};
+
+struct Material {
+
+};
+
+/*struct Texture {
+
+};*/
+
+struct ParamSurface {
+
+};
+
 // vertex shader in GLSL: It is a Raw string (C++11) since it contains new line characters
 const char * const vertexSource = R"(
 	#version 330				// Shader 3.3
@@ -79,13 +115,13 @@ void onDisplay() {
 }
 
 // Key of ASCII code pressed
-void onKeyboard(unsigned char key, int pX, int pY) {
+/*void onKeyboard(unsigned char key, int pX, int pY) {
 	if (key == 'd') glutPostRedisplay();         // if d, invalidate display, i.e. redraw
-}
+}*/
 
 // Key of ASCII code released
-void onKeyboardUp(unsigned char key, int pX, int pY) {
-}
+/*void onKeyboardUp(unsigned char key, int pX, int pY) {
+}*/
 
 // Move mouse with key pressed
 void onMouseMotion(int pX, int pY) {	// pX, pY are the pixel coordinates of the cursor in the coordinate system of the operation system
