@@ -37,6 +37,7 @@ const char* const fragmentSource = R"(
 	}
 )";
 
+// the shader is not good yet pls look at it thx
 class PhongShader : public GPUProgram
 {
 	const char* vertexSource = R"(
@@ -49,7 +50,7 @@ class PhongShader : public GPUProgram
 
 		layout(location = 0) in vec3  vtxPos;            // pos in modeling space
 		layout(location = 1) in vec3  vtxNorm;      	 // normal in modeling space
-		layout(location = 2) in vec2  vtxUV;
+		//layout(location = 2) in vec2  vtxUV; this is texture stuff
 
 		out vec3 wNormal;		    // normal in world space
 		out vec3 wView;             // view in world space
@@ -120,6 +121,8 @@ public:
 		// texture stuff
 	}
 };
+
+PhongShader *shader;
 
 struct VertexData {
 	vec3 position, normal;
@@ -368,7 +371,38 @@ public:
 };
 
 class Scene {
+	Camera camera;
+	Light light;
+	RenderState state;
 
+	// objects we have;
+
+public:
+
+	void Build()
+	{
+		shader = new PhongShader();
+
+		camera.wEye = vec3(0, 0, 10); 
+		camera.wLookat = vec3(0, 0, 0);
+		camera.wVup = vec3(0, 1, 0);
+
+		light = Light(vec3(1, 1, 1), vec3(2, 2, 2), vec3(5, 5, 5));
+	}
+
+	void Render() 
+	{
+		state.wEye = camera.wEye;
+		state.V = camera.V();
+		state.P = camera.P();
+
+		// drawing objects
+	}
+
+	void Animate(float tstart, float tend)
+	{
+		// animate object
+	}
 };
 
 GPUProgram gpuProgram; // vertex and fragment shaders
