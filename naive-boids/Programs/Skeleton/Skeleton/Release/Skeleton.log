@@ -1,12 +1,1 @@
-﻿  Skeleton.cpp
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\framework.h(160,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(168,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(167,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  framework.cpp
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\framework.h(160,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  Generating code
-  1 of 94 functions ( 1.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  Skeleton.vcxproj -> F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\bin\Skeleton.exe
+﻿  Skeleton.vcxproj -> F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\bin\Skeleton.exe

@@ -37,6 +37,75 @@ const char* const fragmentSource = R"(
 	}
 )";
 
+struct RenderState {
+	// Object related states
+	mat4 M, Minv, V, P;
+
+	// Camera related states
+	vec3 wEye;
+
+	// material related state thingies
+	vec3 kd, ks, ka;
+	float shininess;
+
+	// light related state thingies
+	vec3 La, Le, wLightPos;
+
+	// texture related state thingies
+
+public:
+
+	void print()
+	{
+		printf("########################################\n");
+		printf("---------------- OBJECT ----------------\n");
+
+		printf("M:\n");
+		printMat4(M);
+
+		printf("Minv:\n");
+		printMat4(Minv);
+
+		printf("V:\n");
+		printMat4(V);
+
+		printf("P:\n");
+		printMat4(P);
+
+		printf("(MVP):\n");
+		printMat4(M * V * P);
+
+		printf("---------------- CAMERA ----------------\n");
+
+		printf("wEye:\n");
+		printVec3(wEye);
+
+		printf("---------------- MATERIAL ----------------\n");
+
+		printf("kd:\n");
+		printVec3(kd);
+
+		printf("ks:\n");
+		printVec3(ks);
+
+		printf("ka:\n");
+		printVec3(ka);
+
+		printf("shininess: %f\n", shininess);
+
+		printf("---------------- LIGHT ----------------\n");
+
+		printf("La\n");
+		printVec3(La);
+
+		printf("Le\n");
+		printVec3(Le);
+
+		printf("wLightPos\n");
+		printVec3(wLightPos);
+	}
+};
+
 // the shader is not good yet pls look at it thx
 class PhongShader : public GPUProgram
 {
@@ -153,75 +222,6 @@ struct Material {
 		ka = vec3(_ka);
 
 		shininess = _shininess;
-	}
-};
-
-struct RenderState {
-	// Object related states
-	mat4 M, Minv, V, P;
-
-	// Camera related states
-	vec3 wEye;
-
-	// material related state thingies
-	vec3 kd, ks, ka;
-	float shininess;
-
-	// light related state thingies
-	vec3 La, Le, wLightPos;
-
-	// texture related state thingies
-
-public:
-
-	void print()
-	{
-		printf("########################################\n");
-		printf("---------------- OBJECT ----------------\n");
-
-		printf("M:\n");
-		printMat4(M);
-
-		printf("Minv:\n");
-		printMat4(Minv);
-
-		printf("V:\n");
-		printMat4(V);
-
-		printf("P:\n");
-		printMat4(P);
-
-		printf("(MVP):\n");
-		printMat4(M * V * P);
-
-		printf("---------------- CAMERA ----------------\n");
-
-		printf("wEye:\n");
-		printVec3(wEye);
-
-		printf("---------------- MATERIAL ----------------\n");
-
-		printf("kd:\n");
-		printVec3(kd);
-
-		printf("ks:\n");
-		printVec3(ks);
-
-		printf("ka:\n");
-		printVec3(ka);
-
-		printf("shininess: %f\n", shininess);
-
-		printf("---------------- LIGHT ----------------\n");
-
-		printf("La\n");
-		printVec3(La);
-
-		printf("Le\n");
-		printVec3(Le);
-
-		printf("wLightPos\n");
-		printVec3(wLightPos);
 	}
 };
 
