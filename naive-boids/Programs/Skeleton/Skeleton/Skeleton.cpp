@@ -336,6 +336,30 @@ public:
 	}
 };
 
+// TEST PARAM SURFACE SPHERE
+class Sphere : public ParamSurface
+{
+	float r;
+public:
+	Sphere(float _r)
+	{
+		r = _r;
+		Create();
+	}
+
+	VertexData GenVertexData(float u, float v)
+	{
+		VertexData vd;
+		float phi = u * 2 * M_PI;
+		float theta = v * M_PI;
+
+		vd.normal = vec3(cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta)) * r;
+		vd.position = vd.normal;
+		
+		return vd;
+	}
+};
+
 struct Object {
 	Geometry *geom;
 	Material *mat;
@@ -362,8 +386,13 @@ public:
 		//state.texture = texture
 		
 		// MATERIAL TO STATE
-		
-		//shader->Bind(state);
+		state.kd = mat->kd;
+		state.ks = mat->ks;
+		state.ka = mat->ka;
+		state.shininess = mat->shininess;
+
+		shader->Bind(state);
+
 		geom->Draw();
 	}
 
@@ -374,6 +403,7 @@ class Scene {
 	Camera camera;
 	Light light;
 	RenderState state;
+	Object test;
 
 	// objects we have;
 
@@ -388,15 +418,29 @@ public:
 		camera.wVup = vec3(0, 1, 0);
 
 		light = Light(vec3(1, 1, 1), vec3(2, 2, 2), vec3(5, 5, 5));
+
+		vec3 kd(0.3f, 0.2f, 0.1f);
+		vec3 ks(0.008f, 0.008f, 0.008f);
+		vec3 ka = kd * M_PI;
+		float shininess = 10.0f;
+
+		test = Object(new Sphere(1.0f),new Material(kd, ks, ka, shininess), vec3(0, 0, 0));
 	}
 
 	void Render() 
 	{
+		// camera to state
 		state.wEye = camera.wEye;
 		state.V = camera.V();
 		state.P = camera.P();
 
+		// light to state
+		state.La = light.La;
+		state.Le = light.Le;
+		state.wLightPos = light.wLightPos;
+
 		// drawing objects
+		test.Draw(state);
 	}
 
 	void Animate(float tstart, float tend)
