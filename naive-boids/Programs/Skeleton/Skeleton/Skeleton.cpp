@@ -449,12 +449,18 @@ public:
 	}
 };
 
+Scene scene;
+
 GPUProgram gpuProgram; // vertex and fragment shaders
 unsigned int vao;	   // virtual world on the GPU
 
 // Initialization, create an OpenGL context
 void onInitialization() {
 	glViewport(0, 0, windowWidth, windowHeight);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	//scene.Build();
 
 	glGenVertexArrays(1, &vao);	// get 1 vao id
 	glBindVertexArray(vao);		// make it active
