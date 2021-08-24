@@ -106,6 +106,7 @@ public:
 	}
 };
 
+// La is not properly calculated
 // the shader is not good yet pls look at it thx
 class PhongShader : public GPUProgram
 {
@@ -121,7 +122,7 @@ class PhongShader : public GPUProgram
 
 		layout(location = 0) in vec3  vtxPos;            // pos in modeling space
 		layout(location = 1) in vec3  vtxNorm;      	 // normal in modeling space
-		//layout(location = 2) in vec2  vtxUV; this is texture stuff
+		//layout(location = 2) in vec2  vtxUV;				this is texture stuff
 
 		out vec3 wNormal;		    // normal in world space
 		out vec3 wView;             // view in world space
@@ -131,13 +132,14 @@ class PhongShader : public GPUProgram
 		void main() {
 			gl_Position = vec4(vtxPos, 1) * MVP; // to NDC
 		    wView = wEye - (vec4(vtxPos, 1) * M).xyz;
-			wLight = wLightPos;
+			wLight = vtxPos - wLightPos;
 		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
 		    //texcoord = vtxUV;
 		}
 	)";
 
 	// fragment shader in GLSL
+	// La is not properly calculated
 	// THIS IS FOR DIRECTIONAL LIGHT NOT POSITIONAL !!!
 	const char* fragmentSource = R"(
 		#version 330
@@ -156,7 +158,7 @@ class PhongShader : public GPUProgram
 
 		in  vec3 wNormal;       // interpolated world sp normal
 		in  vec3 wView;         // interpolated world sp view
-		in  vec3 wLight;        // interpolated world sp illum dir
+		in  vec3 wLight;        // the direction from where the light is coming from
 		//in  vec2 texcoord;
 		
         out vec4 fragmentColor; // output goes to frame buffer
@@ -165,6 +167,7 @@ class PhongShader : public GPUProgram
 			vec3 N = normalize(wNormal);
 			vec3 V = normalize(wView); 
 			if (dot(N, V) < 0) N = -N;
+
 			//vec3 kd = texture(diffuseTexture, texcoord).rgb;
 			//vec3 ka = kd * 3.14;
 			
@@ -267,6 +270,8 @@ struct VertexData {
 
 struct Light {
 	vec3 La, Le, wLightPos;
+
+	Light() {}
 
 	Light(vec3 _La, vec3 _Le, vec3 _wLightPos)
 	{
@@ -435,6 +440,8 @@ struct Object {
 
 public:
 
+	Object() {}
+
 	Object(Geometry *_geom, Material *_mat, vec3 _pos)
 	{
 		geom = _geom;
@@ -475,6 +482,8 @@ class Scene {
 
 public:
 
+	Scene() {}
+
 	void Build()
 	{
 		shader = new PhongShader();
@@ -490,7 +499,7 @@ public:
 		vec3 ka = kd * M_PI;
 		float shininess = 10.0f;
 
-		test = Object(new Sphere(1.0f),new Material(kd, ks, ka, shininess), vec3(0, 0, 0));
+		test = Object(new Sphere(1.0f), new Material(kd, ks, ka, shininess), vec3(0, 0, 0));
 	}
 
 	void Render() 
@@ -526,9 +535,9 @@ void onInitialization() {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-	//scene.Build();
+	scene.Build();
 
-	glGenVertexArrays(1, &vao);	// get 1 vao id
+	/*glGenVertexArrays(1, &vao);	// get 1 vao id
 	glBindVertexArray(vao);		// make it active
 
 	unsigned int vbo;		// vertex buffer object
@@ -547,16 +556,19 @@ void onInitialization() {
 		0, NULL); 		     // stride, offset: tightly packed
 
 	// create program for the GPU
-	gpuProgram.create(vertexSource, fragmentSource, "outColor");
+	gpuProgram.create(vertexSource, fragmentSource, "outColor");*/
 }
 
 // Window has become invalid: Redraw
 void onDisplay() {
 	glClearColor(0, 0, 0, 0);     // background color
-	glClear(GL_COLOR_BUFFER_BIT); // clear frame buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear frame buffer
+
+	scene.Render();
+	glutSwapBuffers();
 
 	// Set color to (0, 1, 0) = green
-	int location = glGetUniformLocation(gpuProgram.getId(), "color");
+	/*int location = glGetUniformLocation(gpuProgram.getId(), "color");
 	glUniform3f(location, 0.0f, 1.0f, 0.0f); // 3 floats
 
 	float MVPtransf[4][4] = { 1, 0, 0, 0,    // MVP matrix, 
@@ -568,9 +580,9 @@ void onDisplay() {
 	glUniformMatrix4fv(location, 1, GL_TRUE, &MVPtransf[0][0]);	// Load a 4x4 row-major float matrix to the specified location
 
 	glBindVertexArray(vao);  // Draw call
-	glDrawArrays(GL_TRIANGLES, 0 /*startIdx*/, 3 /*# Elements*/);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-	glutSwapBuffers(); // exchange buffers for double buffering
+	// exchange buffers for double buffering*/
 }
 
 // Key of ASCII code pressed

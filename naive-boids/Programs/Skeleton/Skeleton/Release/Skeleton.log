@@ -1,1 +1,12 @@
-﻿  Skeleton.vcxproj -> F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\bin\Skeleton.exe
+﻿  Skeleton.cpp
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\framework.h(160,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(326,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(325,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(424,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(425,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(499,1): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating code
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 196 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Skeleton.vcxproj -> F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\bin\Skeleton.exe
