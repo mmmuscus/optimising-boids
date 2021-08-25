@@ -4,11 +4,11 @@ void printMat4(mat4 mat) {
 	printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
 	printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
 	printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
-	printf("%f, %f, %f, %f\n\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+	printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }
 
 void printVec3(vec3 vec) {
-	printf("X: %f, Y: %f, Z: %f\n\n", vec.x, vec.y, vec.z);
+	printf("X: %f, Y: %f, Z: %f\n", vec.x, vec.y, vec.z);
 }
 
 // vertex shader in GLSL: It is a Raw string (C++11) since it contains new line characters
@@ -129,12 +129,18 @@ class PhongShader : public GPUProgram
 		out vec3 wLight;		    // light dir in world space
 		//out vec2 texcoord;
 
+		//out vec3 debug;
+
 		void main() {
 			gl_Position = vec4(vtxPos, 1) * MVP; // to NDC
 		    wView = wEye - (vec4(vtxPos, 1) * M).xyz;
+
 			wLight = vtxPos - wLightPos;
+
 		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
 		    //texcoord = vtxUV;
+
+			//debug = vec3(vtxPos.z / 3, vtxPos.z / 3, vtxPos.z / 3);
 		}
 	)";
 
@@ -160,6 +166,8 @@ class PhongShader : public GPUProgram
 		in  vec3 wView;         // interpolated world sp view
 		in  vec3 wLight;        // the direction from where the light is coming from
 		//in  vec2 texcoord;
+
+		in vec3 debug;
 		
         out vec4 fragmentColor; // output goes to frame buffer
 
@@ -174,7 +182,9 @@ class PhongShader : public GPUProgram
 			vec3 L = normalize(wLight);
 			vec3 H = normalize(L + V);
 			float cost = max(dot(N,L), 0), cosd = max(dot(N,H), 0);
-			fragmentColor = vec4(ka * La + (kd * cost + ks * pow(cosd, shininess)) * Le, 1);
+			//fragmentColor = vec4(ka * La + (kd * cost + ks * pow(cosd, shininess)) * Le, 1);
+
+			//fragmentColor = vec4(debug, 1);
 		}
 	)";
 
@@ -352,6 +362,9 @@ public:
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vtxData.size() * sizeof(VertexData), &vtxData[0], GL_DYNAMIC_DRAW);
+
+		for (int i = 0; i < vtxData.size(); i++)
+			printVec3(vtxData[i].position);
 		
 		glEnableVertexAttribArray(0);	// position
 		glEnableVertexAttribArray(1);	// normal
@@ -426,6 +439,8 @@ public:
 
 		vd.normal = vec3(cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta));
 		vd.position = vd.normal * r;
+
+		//printVec3(vd.position);
 		
 		return vd;
 	}
