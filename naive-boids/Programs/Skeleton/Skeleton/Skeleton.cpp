@@ -424,8 +424,8 @@ public:
 		float phi = u * 2 * M_PI;
 		float theta = v * M_PI;
 
-		vd.normal = vec3(cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta)) * r;
-		vd.position = vd.normal;
+		vd.normal = vec3(cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta));
+		vd.position = vd.normal * r;
 		
 		return vd;
 	}
