@@ -11,32 +11,6 @@ void printVec3(vec3 vec) {
 	printf("X: %f, Y: %f, Z: %f\n", vec.x, vec.y, vec.z);
 }
 
-// vertex shader in GLSL: It is a Raw string (C++11) since it contains new line characters
-const char* const vertexSource = R"(
-	#version 330				// Shader 3.3
-	precision highp float;		// normal floats, makes no difference on desktop computers
-
-	uniform mat4 MVP;			// uniform variable, the Model-View-Projection transformation matrix
-	layout(location = 0) in vec2 vp;	// Varying input: vp = vertex position is expected in attrib array 0
-
-	void main() {
-		gl_Position = vec4(vp.x, vp.y, 0, 1) * MVP;		// transform vp from modeling space to normalized device space
-	}
-)";
-
-// fragment shader in GLSL
-const char* const fragmentSource = R"(
-	#version 330			// Shader 3.3
-	precision highp float;	// normal floats, makes no difference on desktop computers
-	
-	uniform vec3 color;		// uniform variable, the color of the primitive
-	out vec4 outColor;		// computed color of the current pixel
-
-	void main() {
-		outColor = vec4(color, 1);	// computed color is the color of the primitive
-	}
-)";
-
 struct RenderState {
 	// Object related states
 	mat4 M, Minv, V, P;
@@ -129,7 +103,7 @@ class PhongShader : public GPUProgram
 		out vec3 wLight;		    // light dir in world space
 		//out vec2 texcoord;
 
-		//out vec3 debug;
+		out vec3 debug;
 
 		void main() {
 			gl_Position = vec4(vtxPos, 1) * MVP; // to NDC
@@ -140,7 +114,7 @@ class PhongShader : public GPUProgram
 		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
 		    //texcoord = vtxUV;
 
-			//debug = vec3(vtxPos.z / 3, vtxPos.z / 3, vtxPos.z / 3);
+			debug = vec3(vtxPos.z / 3, vtxPos.z / 3, vtxPos.z / 3);
 		}
 	)";
 
@@ -182,7 +156,7 @@ class PhongShader : public GPUProgram
 			vec3 L = normalize(wLight);
 			vec3 H = normalize(L + V);
 			float cost = max(dot(N,L), 0), cosd = max(dot(N,H), 0);
-			//fragmentColor = vec4(ka * La + (kd * cost + ks * pow(cosd, shininess)) * Le, 1);
+			fragmentColor = vec4(ka * La + (kd * cost + ks * pow(cosd, shininess)) * Le, 1);
 
 			//fragmentColor = vec4(debug, 1);
 		}
@@ -503,7 +477,7 @@ public:
 	{
 		shader = new PhongShader();
 
-		camera.wEye = vec3(0, 0, 10); 
+		camera.wEye = vec3(0, 10, 0); 
 		camera.wLookat = vec3(0, 0, 0);
 		camera.wVup = vec3(0, 1, 0);
 
@@ -536,6 +510,10 @@ public:
 	void Animate(float tstart, float tend)
 	{
 		// animate object
+
+		//test.pos.y += tstart;
+
+		camera.wEye.x += tstart;
 	}
 };
 
@@ -587,14 +565,14 @@ void onMouse(int button, int state, int pX, int pY) { // pX, pY are the pixel co
 
 	char * buttonStat;
 	switch (state) {
-	case GLUT_DOWN: buttonStat = "pressed"; break;
+	case GLUT_DOWN: buttonStat = "pressed"; scene.Animate(1, 1); break;
 	case GLUT_UP:   buttonStat = "released"; break;
 	}
 
 	switch (button) {
 	case GLUT_LEFT_BUTTON:   printf("Left button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY);   break;
 	case GLUT_MIDDLE_BUTTON: printf("Middle button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
-	case GLUT_RIGHT_BUTTON:  printf("Right button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY);  break;
+	case GLUT_RIGHT_BUTTON:  printf("Right button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); scene.Animate(-1, 1); break;
 	}
 }
 
