@@ -499,7 +499,7 @@ public:
 		vec3 ka = kd * M_PI;
 		float shininess = 10.0f;
 
-		test = Object(new Sphere(1.0f), new Material(kd, ks, ka, shininess), vec3(0, 0, 0));
+		test = Object(new Sphere(3), new Material(kd, ks, ka, shininess), vec3(0, 0, 0));
 	}
 
 	void Render() 
@@ -536,27 +536,6 @@ void onInitialization() {
 	glDisable(GL_CULL_FACE);
 
 	scene.Build();
-
-	/*glGenVertexArrays(1, &vao);	// get 1 vao id
-	glBindVertexArray(vao);		// make it active
-
-	unsigned int vbo;		// vertex buffer object
-	glGenBuffers(1, &vbo);	// Generate 1 buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	// Geometry with 24 bytes (6 floats or 3 x 2 coordinates)
-	float vertices[] = { -0.8f, -0.8f, -0.6f, 1.0f, 0.8f, -0.2f };
-	glBufferData(GL_ARRAY_BUFFER, 	// Copy to GPU target
-		sizeof(vertices),  // # bytes
-		vertices,	      	// address
-		GL_STATIC_DRAW);	// we do not change later
-
-	glEnableVertexAttribArray(0);  // AttribArray 0
-	glVertexAttribPointer(0,       // vbo -> AttribArray 0
-		2, GL_FLOAT, GL_FALSE, // two floats/attrib, not fixed-point
-		0, NULL); 		     // stride, offset: tightly packed
-
-	// create program for the GPU
-	gpuProgram.create(vertexSource, fragmentSource, "outColor");*/
 }
 
 // Window has become invalid: Redraw
@@ -566,23 +545,6 @@ void onDisplay() {
 
 	scene.Render();
 	glutSwapBuffers();
-
-	// Set color to (0, 1, 0) = green
-	/*int location = glGetUniformLocation(gpuProgram.getId(), "color");
-	glUniform3f(location, 0.0f, 1.0f, 0.0f); // 3 floats
-
-	float MVPtransf[4][4] = { 1, 0, 0, 0,    // MVP matrix, 
-							  0, 1, 0, 0,    // row-major!
-							  0, 0, 1, 0,
-							  0, 0, 0, 1 };
-
-	location = glGetUniformLocation(gpuProgram.getId(), "MVP");	// Get the GPU location of uniform variable MVP
-	glUniformMatrix4fv(location, 1, GL_TRUE, &MVPtransf[0][0]);	// Load a 4x4 row-major float matrix to the specified location
-
-	glBindVertexArray(vao);  // Draw call
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	// exchange buffers for double buffering*/
 }
 
 // Key of ASCII code pressed
