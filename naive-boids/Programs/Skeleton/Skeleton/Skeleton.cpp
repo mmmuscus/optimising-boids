@@ -451,11 +451,7 @@ public:
 
 	void Animate(float tstart, float tend)
 	{
-		// animate object
 
-		//test.pos.y += tstart;
-
-		camera.wEye.x += tstart;
 	}
 };
 
@@ -482,14 +478,50 @@ void onDisplay() {
 	glutSwapBuffers();
 }
 
+bool aFlag = false;
+bool wFlag = false;
+bool sFlag = false;
+bool dFlag = false;
+
 // Key of ASCII code pressed
-/*void onKeyboard(unsigned char key, int pX, int pY) {
-	if (key == 'd') glutPostRedisplay();         // if d, invalidate display, i.e. redraw
-}*/
+void onKeyboard(unsigned char key, int pX, int pY) 
+{
+	switch (key)
+	{
+		case 'a':
+			aFlag = true;
+			break;
+		case 'w':
+			wFlag = true;
+			break;
+		case 's':
+			sFlag = true;
+			break;
+		case 'd':
+			dFlag = true;
+			break;
+	}
+}
 
 // Key of ASCII code released
-/*void onKeyboardUp(unsigned char key, int pX, int pY) {
-}*/
+void onKeyboardUp(unsigned char key, int pX, int pY)
+{
+	switch (key)
+	{
+		case 'a':
+			aFlag = false;
+			break;
+		case 'w':
+			wFlag = false;
+			break;
+		case 's':
+			sFlag = false;
+			break;
+		case 'd':
+			dFlag = false;
+			break;
+	}
+}
 
 // Move mouse with key pressed
 void onMouseMotion(int pX, int pY) {	// pX, pY are the pixel coordinates of the cursor in the coordinate system of the operation system
@@ -507,18 +539,20 @@ void onMouse(int button, int state, int pX, int pY) { // pX, pY are the pixel co
 
 	char * buttonStat;
 	switch (state) {
-	case GLUT_DOWN: buttonStat = "pressed"; scene.Animate(1, 1); break;
+	case GLUT_DOWN: buttonStat = "pressed"; break;
 	case GLUT_UP:   buttonStat = "released"; break;
 	}
 
 	switch (button) {
 	case GLUT_LEFT_BUTTON:   printf("Left button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY);   break;
 	case GLUT_MIDDLE_BUTTON: printf("Middle button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
-	case GLUT_RIGHT_BUTTON:  printf("Right button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); scene.Animate(-1, 1); break;
+	case GLUT_RIGHT_BUTTON:  printf("Right button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
 	}
 }
 
 // Idle event indicating that some time elapsed: do animation here
 void onIdle() {
 	long time = glutGet(GLUT_ELAPSED_TIME); // elapsed time since the start of the program
+	if (wFlag)
+		printf("W held for %f\n");
 }

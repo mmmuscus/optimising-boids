@@ -7,10 +7,10 @@ void onInitialization();
 void onDisplay();
 
 // Key of ASCII code pressed
-//void onKeyboard(unsigned char key, int pX, int pY);
+void onKeyboard(unsigned char key, int pX, int pY);
 
 // Key of ASCII code released
-//void onKeyboardUp(unsigned char key, int pX, int pY);
+void onKeyboardUp(unsigned char key, int pX, int pY);
 
 // Move mouse with key pressed
 void onMouseMotion(int pX, int pY);
@@ -58,8 +58,8 @@ int main(int argc, char * argv[]) {
 	glutDisplayFunc(onDisplay);                // Register event handlers
 	glutMouseFunc(onMouse);
 	glutIdleFunc(onIdle);
-	//glutKeyboardFunc(onKeyboard);
-	//glutKeyboardUpFunc(onKeyboardUp);
+	glutKeyboardFunc(onKeyboard);
+	glutKeyboardUpFunc(onKeyboardUp);
 	glutMotionFunc(onMouseMotion);
 
 	glutMainLoop();
