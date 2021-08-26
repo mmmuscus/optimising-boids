@@ -1,14 +1,26 @@
 #include "framework.h"
 
-void printMat4(mat4 mat) {
+void printMat4(mat4 mat) 
+{
 	printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
 	printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
 	printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
 	printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }
 
-void printVec3(vec3 vec) {
+void printVec2(vec2 vec)
+{
+	printf("X: %f, Y: %f\n", vec.x, vec.y);
+}
+
+void printVec3(vec3 vec) 
+{
 	printf("X: %f, Y: %f, Z: %f\n", vec.x, vec.y, vec.z);
+}
+
+void printVec4(vec4 vec)
+{
+	printf("X: %f, Y: %f, Z: %f, W: %f\n", vec.x, vec.y, vec.z, vec.w);
 }
 
 struct RenderState {
