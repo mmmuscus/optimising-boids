@@ -221,7 +221,7 @@ struct Camera {
 
 public:
 
-	void MoveWithKeys(bool a, bool w, bool s, bool d, long time)
+	void MoveWithKeys(bool a, bool w, bool s, bool d, float time)
 	{
 		vec3 dir = vec3(0, 0, 0);
 
@@ -229,6 +229,8 @@ public:
 		if (w) dir = dir + normalize(wLookat - wEye);
 		if (s) dir = dir + normalize(wEye - wLookat);
 		if (d) dir = dir + normalize(cross(wVup, wEye - wLookat));
+
+		dir = dir * time;
 
 		wLookat = wLookat + dir;
 		wEye = wEye + dir;
@@ -262,9 +264,6 @@ public:
 		wLookatVector = vec3(wLookatVector4.x, wLookatVector4.y, wLookatVector4.z) * wLookatDistance;
 
 		wLookat = wEye + wLookatVector;
-
-		printf("wVup\n");
-		printVec3(wVup);
 	}
 	
 	// view transformation matrix
@@ -313,9 +312,6 @@ public:
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vtxData.size() * sizeof(VertexData), &vtxData[0], GL_DYNAMIC_DRAW);
-
-		for (int i = 0; i < vtxData.size(); i++)
-			printVec3(vtxData[i].position);
 		
 		glEnableVertexAttribArray(0);	// position
 		glEnableVertexAttribArray(1);	// normal
@@ -390,8 +386,6 @@ public:
 
 		vd.normal = vec3(cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta));
 		vd.position = vd.normal * r;
-
-		//printVec3(vd.position);
 		
 		return vd;
 	}
@@ -582,22 +576,21 @@ void onMouse(int button, int state, int pX, int pY) { // pX, pY are the pixel co
 
 	char * buttonStat;
 	switch (state) {
-	case GLUT_DOWN: buttonStat = "pressed"; mouseStart = vec2(cX, cY); moving = true; break;
+	case GLUT_DOWN: buttonStat = "pressed"; mouseStart = vec2(cX, cY); mouseEnd = mouseStart; moving = true; break;
 	case GLUT_UP:   buttonStat = "released"; moving = false; break;
 	}
-
-	/*switch (button) {
-	case GLUT_LEFT_BUTTON:   printf("Left button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY);   break;
-	case GLUT_MIDDLE_BUTTON: printf("Middle button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
-	case GLUT_RIGHT_BUTTON:  printf("Right button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
-	}*/
 }
+
+long lastTime = 0.0f;
+long currTime = 0.0f;
 
 // Idle event indicating that some time elapsed: do animation here
 void onIdle() {
-	long time = glutGet(GLUT_ELAPSED_TIME); // elapsed time since the start of the program
+	currTime = glutGet(GLUT_ELAPSED_TIME) / 20.0f; // elapsed time since the start of the program
+	float deltaTime = (float)currTime - (float)lastTime;
+	lastTime = currTime;
 
-	scene.getCamera()->MoveWithKeys(aFlag, wFlag, sFlag, dFlag, time);
+	scene.getCamera()->MoveWithKeys(aFlag, wFlag, sFlag, dFlag, deltaTime);
 
 	if (moving)
 	{
