@@ -228,9 +228,22 @@ struct Camera {
 	float fov = 75.0f * (float)M_PI / 180.0f;
 	float asp = (float)windowWidth / windowHeight;
 	float fp = 1;	// care for z fighting
-	float bp = 30;
+	float bp = 100;
 
 public:
+
+	void MoveWithKeys(bool a, bool w, bool s, bool d, long time)
+	{
+		vec3 dir = vec3(0, 0, 0);
+
+		if (a) dir = dir + normalize(cross(wVup, wLookat - wEye));
+		if (w) dir = dir + normalize(wLookat - wEye);
+		if (s) dir = dir + normalize(wEye - wLookat);
+		if (d) dir = dir + normalize(cross(wVup, wEye - wLookat));
+
+		wLookat = wLookat + dir;
+		wEye = wEye + dir;
+	}
 	
 	// view transformation matrix
 	mat4 V()
@@ -404,7 +417,7 @@ public:
 };
 
 class Scene {
-	Camera camera;
+	Camera* camera;
 	Light light;
 	RenderState state;
 	Object test;
@@ -415,13 +428,17 @@ public:
 
 	Scene() {}
 
+	Camera* getCamera() { return camera; }
+
 	void Build()
 	{
 		shader = new PhongShader();
 
-		camera.wEye = vec3(0, 0, 10); 
-		camera.wLookat = vec3(0, 0, 0);
-		camera.wVup = vec3(0, 1, 0);
+		camera = new Camera();
+
+		camera->wEye = vec3(0, 0, 10);
+		camera->wLookat = vec3(0, 0, 0);
+		camera->wVup = vec3(0, 1, 0);
 
 		light = Light(vec3(1, 1, 1), vec3(2, 2, 2), vec3(5, 5, 5));
 
@@ -436,9 +453,9 @@ public:
 	void Render() 
 	{
 		// camera to state
-		state.wEye = camera.wEye;
-		state.V = camera.V();
-		state.P = camera.P();
+		state.wEye = camera->wEye;
+		state.V = camera->V();
+		state.P = camera->P();
 
 		// light to state
 		state.La = light.La;
@@ -458,7 +475,6 @@ public:
 Scene scene;
 
 GPUProgram gpuProgram; // vertex and fragment shaders
-unsigned int vao;	   // virtual world on the GPU
 
 // Initialization, create an OpenGL context
 void onInitialization() {
@@ -553,6 +569,8 @@ void onMouse(int button, int state, int pX, int pY) { // pX, pY are the pixel co
 // Idle event indicating that some time elapsed: do animation here
 void onIdle() {
 	long time = glutGet(GLUT_ELAPSED_TIME); // elapsed time since the start of the program
-	if (wFlag)
-		printf("W held for %f\n");
+
+	scene.getCamera()->MoveWithKeys(aFlag, wFlag, sFlag, dFlag, time);
+
+	glutPostRedisplay();
 }
