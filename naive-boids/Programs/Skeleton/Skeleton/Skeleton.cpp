@@ -237,27 +237,34 @@ public:
 	void RotateWithMouse(vec2 start, vec2 end)
 	{
 		// just isolated for x
-		float distance = end.x - start.x;
-		float rotationAngle = 1.0f * distance * fov / 2.0f;
-
-		printf("iteration\n");
-		printVec3(wLookat);
+		float distanceX = end.x - start.x;
+		float rotationAngleX = distanceX * fov / 2.0f;
 
 		vec3 wLookatVector = normalize(wLookat - wEye);
-		float wLookatDistance = length(wLookatVector);
+		float wLookatDistance = length(wLookat - wEye);
 
-		printf("%f\n", wLookatDistance);
-		printVec3(wLookatVector);
-
-		vec4 wLookatVector4 = vec4(wLookatVector.x, wLookatVector.y, wLookatVector.z, 1.0f) * RotationMatrix(rotationAngle, wVup);
-		
+		vec4 wLookatVector4 = vec4(wLookatVector.x, wLookatVector.y, wLookatVector.z, 1.0f) * RotationMatrix(rotationAngleX, wVup);
 		wLookatVector = vec3(wLookatVector4.x, wLookatVector4.y, wLookatVector4.z) * wLookatDistance;
-
-		printVec3(wLookatVector);
 
 		wLookat = wEye + wLookatVector;
 
-		printVec3(wLookat);
+		// just isolated for y
+		float distanceY = end.y - start.y;
+		float rotationAngleY = distanceY * (fov / asp) / 2.0f;
+		vec3 rotationAxisY = normalize(cross(wVup, wLookatVector));
+
+		vec4 wVup4 = vec4(wVup.x, wVup.y, wVup.z, 1.0f) * RotationMatrix(rotationAngleY, rotationAxisY);
+		wVup = vec3(wVup4.x, wVup4.y, wVup4.z);
+
+		wLookatVector = normalize(wLookat - wEye);
+
+		wLookatVector4 = vec4(wLookatVector.x, wLookatVector.y, wLookatVector.z, 1.0f) * RotationMatrix(rotationAngleY, rotationAxisY);
+		wLookatVector = vec3(wLookatVector4.x, wLookatVector4.y, wLookatVector4.z) * wLookatDistance;
+
+		wLookat = wEye + wLookatVector;
+
+		printf("wVup\n");
+		printVec3(wVup);
 	}
 	
 	// view transformation matrix
