@@ -88,8 +88,6 @@ class PhongShader : public GPUProgram
 		#version 330
 		precision highp float;
 
-		//const vec3 wLightPos  = vec3(3, 4, 5);	// directional light source;
-
 		uniform mat4 MVP, M, Minv; // MVP, Model, Model-inverse
 		uniform vec3 wEye;         // pos of eye
 		uniform vec3 wLightPos;		// light stuffz
@@ -125,11 +123,6 @@ class PhongShader : public GPUProgram
 		#version 330
 		precision highp float;
 
-		/*const vec3 ks = vec3(2, 2, 2);
-		const float shininess = 50.0f;
-		const vec3 La = vec3(0.1f, 0.1f, 0.1f);
-		const vec3 Le = vec3(2, 2, 2);*/
-
 		//uniform sampler2D diffuseTexture;
 
 		uniform vec3 kd, ks, ka;	// material stuffz
@@ -149,10 +142,6 @@ class PhongShader : public GPUProgram
 			vec3 N = normalize(wNormal);
 			vec3 V = normalize(wView); 
 			if (dot(N, V) < 0) N = -N;
-
-			//vec3 kd = texture(diffuseTexture, texcoord).rgb;
-			//vec3 ka = kd * 3.14;
-			
 			vec3 L = normalize(wLight);
 			vec3 H = normalize(L + V);
 			float cost = max(dot(N,L), 0), cosd = max(dot(N,H), 0);
@@ -243,6 +232,32 @@ public:
 
 		wLookat = wLookat + dir;
 		wEye = wEye + dir;
+	}
+
+	void RotateWithMouse(vec2 start, vec2 end)
+	{
+		// just isolated for x
+		float distance = end.x - start.x;
+		float rotationAngle = 1.0f * distance * fov / 2.0f;
+
+		printf("iteration\n");
+		printVec3(wLookat);
+
+		vec3 wLookatVector = normalize(wLookat - wEye);
+		float wLookatDistance = length(wLookatVector);
+
+		printf("%f\n", wLookatDistance);
+		printVec3(wLookatVector);
+
+		vec4 wLookatVector4 = vec4(wLookatVector.x, wLookatVector.y, wLookatVector.z, 1.0f) * RotationMatrix(rotationAngle, wVup);
+		
+		wLookatVector = vec3(wLookatVector4.x, wLookatVector4.y, wLookatVector4.z) * wLookatDistance;
+
+		printVec3(wLookatVector);
+
+		wLookat = wEye + wLookatVector;
+
+		printVec3(wLookat);
 	}
 	
 	// view transformation matrix
@@ -539,12 +554,17 @@ void onKeyboardUp(unsigned char key, int pX, int pY)
 	}
 }
 
+vec2 mouseStart = vec2(0, 0);
+vec2 mouseEnd = vec2(0, 0);
+bool moving = false;
+
 // Move mouse with key pressed
 void onMouseMotion(int pX, int pY) {	// pX, pY are the pixel coordinates of the cursor in the coordinate system of the operation system
 	// Convert to normalized device space
 	float cX = 2.0f * pX / windowWidth - 1;	// flip y axis
 	float cY = 1.0f - 2.0f * pY / windowHeight;
-	printf("Mouse moved to (%3.2f, %3.2f)\n", cX, cY);
+
+	mouseEnd = vec2(cX, cY);
 }
 
 // Mouse click event
@@ -555,15 +575,15 @@ void onMouse(int button, int state, int pX, int pY) { // pX, pY are the pixel co
 
 	char * buttonStat;
 	switch (state) {
-	case GLUT_DOWN: buttonStat = "pressed"; break;
-	case GLUT_UP:   buttonStat = "released"; break;
+	case GLUT_DOWN: buttonStat = "pressed"; mouseStart = vec2(cX, cY); moving = true; break;
+	case GLUT_UP:   buttonStat = "released"; moving = false; break;
 	}
 
-	switch (button) {
+	/*switch (button) {
 	case GLUT_LEFT_BUTTON:   printf("Left button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY);   break;
 	case GLUT_MIDDLE_BUTTON: printf("Middle button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
 	case GLUT_RIGHT_BUTTON:  printf("Right button %s at (%3.2f, %3.2f)\n", buttonStat, cX, cY); break;
-	}
+	}*/
 }
 
 // Idle event indicating that some time elapsed: do animation here
@@ -571,6 +591,13 @@ void onIdle() {
 	long time = glutGet(GLUT_ELAPSED_TIME); // elapsed time since the start of the program
 
 	scene.getCamera()->MoveWithKeys(aFlag, wFlag, sFlag, dFlag, time);
+
+	if (moving)
+	{
+		scene.getCamera()->RotateWithMouse(mouseStart, mouseEnd);
+	}
+
+	mouseStart = mouseEnd;
 
 	glutPostRedisplay();
 }
