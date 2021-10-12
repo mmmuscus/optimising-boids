@@ -111,6 +111,7 @@ class PhongShader : public GPUProgram
 		out vec3 wNormal;		    // normal in world space
 		out vec3 wView;             // view in world space
 		out vec3 wLight;		    // light dir in world space
+		out float vtxDistanceFromLightSquaredVec;
 		//out vec2 texcoord;
 
 		out vec3 debug;
@@ -120,11 +121,11 @@ class PhongShader : public GPUProgram
 		    wView = wEye - (vec4(vtxPos, 1) * M).xyz;
 
 			wLight = vtxPos - wLightPos;
-
+			vtxDistanceFromLightSquaredVec = (1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2)), 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2)), 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2)));
 		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
 		    //texcoord = vtxUV;
 
-			debug = vec3(vtxPos.z / 3, vtxPos.z / 3, vtxPos.z / 3);
+			debug = vec3(1, 1, 1);
 		}
 	)";
 
@@ -144,6 +145,7 @@ class PhongShader : public GPUProgram
 		in  vec3 wNormal;       // interpolated world sp normal
 		in  vec3 wView;         // interpolated world sp view
 		in  vec3 wLight;        // the direction from where the light is coming from
+		in	float vtxDistanceFromLightSquaredVec;
 		//in  vec2 texcoord;
 
 		in vec3 debug;
@@ -157,7 +159,7 @@ class PhongShader : public GPUProgram
 			vec3 L = normalize(wLight);
 			vec3 H = normalize(L + V);
 			float cost = max(dot(N,L), 0), cosd = max(dot(N,H), 0);
-			fragmentColor = vec4(ka * La + (kd * cost + ks * pow(cosd, shininess)) * Le, 1);
+			fragmentColor = vec4(ka * La + (kd * cost + ks * pow(cosd, shininess)) * Le * vtxDistanceFromLightSquaredVec, 1);
 
 			//fragmentColor = vec4(debug, 1);
 		}
@@ -468,7 +470,7 @@ public:
 		camera->wLookat = vec3(0, 0, 0);
 		camera->wVup = vec3(0, 1, 0);
 
-		light = Light(vec3(1, 1, 1), vec3(2, 2, 2), vec3(5, 5, 5));
+		light = Light(vec3(1, 1, 1), vec3(80, 80, 80), vec3(3, 3, -3));
 
 		vec3 kd(0.3f, 0.2f, 0.1f);
 		vec3 ks(0.008f, 0.008f, 0.008f);
