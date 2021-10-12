@@ -121,7 +121,7 @@ class PhongShader : public GPUProgram
 		    wView = wEye - (vec4(vtxPos, 1) * M).xyz;
 
 			wLight = vtxPos - wLightPos;
-			vtxDistanceFromLightSquaredVec = (1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2)), 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2)), 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2)));
+			vtxDistanceFromLightSquaredVec = 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2));
 		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
 		    //texcoord = vtxUV;
 
