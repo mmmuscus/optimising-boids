@@ -36,6 +36,7 @@ struct RenderState {
 
 	// light related state thingies
 	vec3 La, Le, wLightPos;
+	int lightType;
 
 	// texture related state thingies
 
@@ -81,14 +82,17 @@ public:
 
 		printf("---------------- LIGHT ----------------\n");
 
-		printf("La\n");
+		printf("La:\n");
 		printVec3(La);
 
-		printf("Le\n");
+		printf("Le:\n");
 		printVec3(Le);
 
-		printf("wLightPos\n");
+		printf("wLightPos:\n");
 		printVec3(wLightPos);
+
+		printf("lightType:\n");
+		printf("%d\n", lightType);
 	}
 };
 
@@ -102,7 +106,8 @@ class PhongShader : public GPUProgram
 
 		uniform mat4 MVP, M, Minv; // MVP, Model, Model-inverse
 		uniform vec3 wEye;         // pos of eye
-		uniform vec3 wLightPos;		// light stuffz
+		uniform vec3 wLightPos;	   // light stuffz
+		uniform int lightType;	   // 0 for positional, 1 for directional
 
 		layout(location = 0) in vec3  vtxPos;            // pos in modeling space
 		layout(location = 1) in vec3  vtxNorm;      	 // normal in modeling space
@@ -120,8 +125,17 @@ class PhongShader : public GPUProgram
 			gl_Position = vec4(vtxPos, 1) * MVP; // to NDC
 		    wView = wEye - (vec4(vtxPos, 1) * M).xyz;
 
-			wLight = vtxPos - wLightPos;
-			vtxDistanceFromLightSquaredVec = 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2));
+			if (lightType == 0)
+			{
+				wLight = vtxPos - wLightPos;
+				vtxDistanceFromLightSquaredVec = 1 / (pow(vtxPos.x - wLightPos.x, 2) + pow(vtxPos.y - wLightPos.y, 2) + pow(vtxPos.z - wLightPos.z, 2));
+			}	
+			else
+			{
+				wLight = wLightPos;
+				vtxDistanceFromLightSquaredVec = 1;
+			}
+
 		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
 		    //texcoord = vtxUV;
 
@@ -184,6 +198,7 @@ public:
 		setUniform(state.La, "La");
 		setUniform(state.Le, "Le");
 		setUniform(state.wLightPos, "wLightPos");
+		setUniform(state.lightType, "lightType");
 
 		// texture stuff
 	}
@@ -197,17 +212,34 @@ struct VertexData {
 	//vec2 texcoord;
 };
 
+enum LightType { POSITIONAL_LIGHT, DIRECTIONAL_LIGHT };
+
 struct Light {
 	vec3 La, Le, wLightPos;
+	LightType type; 
 
 	Light() {}
 
-	Light(vec3 _La, vec3 _Le, vec3 _wLightPos)
+	Light(vec3 _La, vec3 _Le, vec3 _wLightPos, LightType _type)
 	{
 		La = vec3(_La);
 		Le = vec3(_Le);
 
 		wLightPos = vec3(_wLightPos);
+
+		type = _type;
+	}
+
+	void updateDrawState(RenderState* state)
+	{
+		state->La = La;
+		state->Le = Le;
+		state->wLightPos = wLightPos;
+
+		if (type == POSITIONAL_LIGHT)
+			state->lightType = 0;
+		else
+			state->lightType = 1;
 	}
 };
 
@@ -470,7 +502,7 @@ public:
 		camera->wLookat = vec3(0, 0, 0);
 		camera->wVup = vec3(0, 1, 0);
 
-		light = Light(vec3(1, 1, 1), vec3(80, 80, 80), vec3(3, 3, -3));
+		light = Light(vec3(1, 1, 1), vec3(80, 80, 80), vec3(3, 3, -3), POSITIONAL_LIGHT);
 
 		vec3 kd(0.3f, 0.2f, 0.1f);
 		vec3 ks(0.008f, 0.008f, 0.008f);
@@ -488,9 +520,7 @@ public:
 		state.P = camera->P();
 
 		// light to state
-		state.La = light.La;
-		state.Le = light.Le;
-		state.wLightPos = light.wLightPos;
+		light.updateDrawState(&state);
 
 		// drawing objects
 		test.Draw(state);
