@@ -255,6 +255,15 @@ struct Material {
 
 		shininess = _shininess;
 	}
+
+	void updateDrawState(RenderState* state)
+	{
+		state->kd = kd;
+		state->ks = ks;
+		state->ka = ka;
+
+		state->shininess = shininess;
+	}
 };
 
 struct Camera {
@@ -332,6 +341,13 @@ public:
 						0,							1 / tan(fov / 2),	0,							0,
 						0,							0,					-(fp + bp) / (bp - fp),		-1,
 						0,							0,					-2 * fp * bp / (bp - fp),	0);
+	}
+
+	void updateDrawState(RenderState* state)
+	{
+		state->wEye = wEye;
+		state->V = V();
+		state->P = P();
 	}
 };
 
@@ -465,10 +481,7 @@ public:
 		//state.texture = texture
 		
 		// MATERIAL TO STATE
-		state.kd = mat->kd;
-		state.ks = mat->ks;
-		state.ka = mat->ka;
-		state.shininess = mat->shininess;
+		mat->updateDrawState(&state);
 
 		shader->Bind(state);
 
@@ -515,9 +528,7 @@ public:
 	void Render() 
 	{
 		// camera to state
-		state.wEye = camera->wEye;
-		state.V = camera->V();
-		state.P = camera->P();
+		camera->updateDrawState(&state);
 
 		// light to state
 		light.updateDrawState(&state);

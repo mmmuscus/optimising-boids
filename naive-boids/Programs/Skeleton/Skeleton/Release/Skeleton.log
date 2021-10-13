@@ -1,16 +1,16 @@
 ﻿  Skeleton.cpp
 F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\framework.h(160,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(332,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(331,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(430,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(431,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(509,1): warning C4305: 'argument': truncation from 'double' to 'float'
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(628,15): warning C4244: 'initializing': conversion from 'float' to 'long', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(629,15): warning C4244: 'initializing': conversion from 'float' to 'long', possible loss of data
-F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(633,40): warning C4244: '=': conversion from 'float' to 'long', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(341,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(340,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(446,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(447,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(526,1): warning C4305: 'argument': truncation from 'double' to 'float'
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(643,15): warning C4244: 'initializing': conversion from 'float' to 'long', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(644,15): warning C4244: 'initializing': conversion from 'float' to 'long', possible loss of data
+F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\Skeleton\Skeleton.cpp(648,40): warning C4244: '=': conversion from 'float' to 'long', possible loss of data
   Generating code
-  4 of 207 functions ( 1.9%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  4 of 209 functions ( 1.9%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Skeleton.vcxproj -> F:\Marci\iskola\Uni\TDK\optimising boids 2021\optimising-boids\naive-boids\Programs\Skeleton\bin\Skeleton.exe
