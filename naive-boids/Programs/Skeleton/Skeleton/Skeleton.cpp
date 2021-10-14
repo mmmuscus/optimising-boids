@@ -493,7 +493,7 @@ public:
 
 class Scene {
 	Camera* camera;
-	Light light;
+	Light testLight1, testLight2;
 	RenderState state;
 	Object test;
 
@@ -515,7 +515,8 @@ public:
 		camera->wLookat = vec3(0, 0, 0);
 		camera->wVup = vec3(0, 1, 0);
 
-		light = Light(vec3(1, 1, 1), vec3(80, 80, 80), vec3(3, 3, -3), POSITIONAL_LIGHT);
+		testLight1 = Light(vec3(1, 1, 1), vec3(80, 80, 80), vec3(3, 3, -3), POSITIONAL_LIGHT);
+		testLight2 = Light(vec3(1, 1, 1), vec3(200, 200, 200), vec3(0, 10, 0), DIRECTIONAL_LIGHT);
 
 		vec3 kd(0.3f, 0.2f, 0.1f);
 		vec3 ks(0.008f, 0.008f, 0.008f);
@@ -531,7 +532,7 @@ public:
 		camera->updateDrawState(&state);
 
 		// light to state
-		light.updateDrawState(&state);
+		testLight1.updateDrawState(&state);
 
 		// drawing objects
 		test.Draw(state);
@@ -616,6 +617,18 @@ bool moving = false;
 
 // Move mouse with key pressed
 void onMouseMotion(int pX, int pY) {	// pX, pY are the pixel coordinates of the cursor in the coordinate system of the operation system
+	// Convert to normalized device space
+	float cX = 2.0f * pX / windowWidth - 1;	// flip y axis
+	float cY = 1.0f - 2.0f * pY / windowHeight;
+
+	/*mouseStart = vec2(cX, cY);
+	scene.getCamera()->RotateWithMouse(mouseStart, mouseEnd);*/
+
+	mouseEnd = vec2(cX, cY);
+}
+
+void handleMouseMotion(int pX, int pY)
+{
 	// Convert to normalized device space
 	float cX = 2.0f * pX / windowWidth - 1;	// flip y axis
 	float cY = 1.0f - 2.0f * pY / windowHeight;
