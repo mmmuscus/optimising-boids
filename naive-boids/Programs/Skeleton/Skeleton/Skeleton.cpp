@@ -433,7 +433,9 @@ public:
 class Sphere : public ParamSurface
 {
 	float r;
+
 public:
+
 	Sphere(float _r)
 	{
 		r = _r;
@@ -450,6 +452,26 @@ public:
 		vd.position = vd.normal * r;
 		
 		return vd;
+	}
+};
+
+class Cube : public ParamSurface
+{
+	float a;
+
+public:
+	
+	Cube(float _a)
+	{
+		a = _a;
+		Create();
+	}
+
+	VertexData GenVertexData(float u, float v)
+	{
+		VertexData vd;
+
+
 	}
 };
 
