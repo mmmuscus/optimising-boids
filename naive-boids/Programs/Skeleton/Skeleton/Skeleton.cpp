@@ -464,6 +464,29 @@ public:
 	Cube(float _a)
 	{
 		a = _a;
+		Create(6, 2);
+	}
+
+	VertexData GenVertexData(float u, float v)
+	{
+		VertexData vd;
+
+		vd.position = vec3();
+		vd.normal = vec3();
+	}
+};
+
+class Capsule : public ParamSurface
+{
+	float r;
+	float h;
+
+public:
+
+	Capsule(float _r, float _h)
+	{
+		r = _r;
+		h = _h;
 		Create();
 	}
 
@@ -471,7 +494,8 @@ public:
 	{
 		VertexData vd;
 
-
+		vd.position = vec3();
+		vd.normal = vec3();
 	}
 };
 
